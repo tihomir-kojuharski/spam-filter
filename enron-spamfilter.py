@@ -22,20 +22,20 @@ def make_Dictionary(root_dir):
         for d in dirs:
             emails = [os.path.join(d,f) for f in os.listdir(d)]
             for mail in emails:
-                with open(mail) as m:
-                    print(m)
+                with open(mail, "rb") as m:
                     for line in m:
-                        print(line)
                         words = line.split()
                         all_words += words
     dictionary = Counter(all_words)
     list_to_remove = dictionary.keys()
 
+    items_to_remove = []
     for item in list_to_remove:
-        if item.isalpha() == False:
-            del dictionary[item]
-        elif len(item) == 1:
-            del dictionary[item]
+        if item.isalpha() == False or len(item) == 1:
+            items_to_remove.append(dictionary[item])
+    for item in items_to_remove:
+        del dictionary[item]
+
     dictionary = dictionary.most_common(3000)
 
     np.save('dict_enron.npy',dictionary)
