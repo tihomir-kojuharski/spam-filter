@@ -12,7 +12,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import confusion_matrix
 from sklearn.svm import LinearSVC
+from sklearn.neighbors import KNeighborsClassifier
 
+mailsCount = 0
+
+class WordDesc:
+    def __init__(self, wordId, counter):
+        self.wordId = wordId
+        self.counter = counter
 
 def make_Dictionary(root_dir):
     emails_dirs = [os.path.join(root_dir,f) for f in os.listdir(root_dir)]
@@ -26,31 +33,39 @@ def make_Dictionary(root_dir):
             emails = [os.path.join(d,f) for f in os.listdir(d)]
             for mail in emails:
                 if '.DS_Store' in mail: continue
+
+                globals()['mailsCount'] = globals()['mailsCount'] + 1
                 with open(mail, "rb") as m:
                     for line in m:
                         words = line.split()
                         all_words += words
-    dictionary = Counter(all_words)
-    list_to_remove = dictionary.keys()
+    wordCountersList = Counter(all_words)
 
     items_to_remove = []
-    for item in list_to_remove:
+    for item in wordCountersList.keys():
         if item.isalpha() == False or len(item) == 1:
-            items_to_remove.append(dictionary[item])
+            items_to_remove.append(wordCountersList[item])
     for item in items_to_remove:
-        del dictionary[item]
+        del wordCountersList[item]
 
-    dictionary = dictionary.most_common(3000)
+    wordCountersList = wordCountersList.most_common(3000)
 
-    np.save('dict_enron.npy',dictionary)
+    dictionary = {}
+    nextWordId = 0
+
+    for wordCounter in wordCountersList:
+        dictionary[wordCounter[0]] = WordDesc(nextWordId, wordCounter[1])
+        nextWordId += 1
+
+    np.save('dict_enron.npy',wordCountersList)
 
     return dictionary
 
 def extract_features(root_dir):
     emails_dirs = [os.path.join(root_dir,f) for f in os.listdir(root_dir)]
     docID = 0
-    features_matrix = np.zeros((6000,3000))
-    train_labels = np.zeros(6000)
+    features_matrix = np.zeros((mailsCount, 3000))
+    train_labels = np.zeros(mailsCount)
     for emails_dir in emails_dirs:
         if not os.path.isdir(emails_dir): continue
         dirs = [os.path.join(emails_dir,f) for f in os.listdir(emails_dir)]
@@ -66,12 +81,15 @@ def extract_features(root_dir):
                     for line in m:
                         words = line.split()
                         all_words += words
-                    for word in all_words:
-                      wordID = 0
-                      for i,d in enumerate(dictionary):
-                        if d[0] == word:
-                          wordID = i
-                          features_matrix[docID,wordID] = all_words.count(word)
+
+                    wordCountersList = Counter(all_words)
+
+
+                    for word, wordCount in wordCountersList.items():
+                        wordDesc = dictionary.get(word)
+                        if wordDesc == None:
+                            continue
+                        features_matrix[docID, wordDesc.wordId] = wordCount
                 train_labels[docID] = int(mail.split(".")[-2] == 'spam')
                 docID = docID + 1
     return features_matrix,train_labels
@@ -99,15 +117,15 @@ X_train, X_test, y_train, y_test = train_test_split(features_matrix, labels, tes
 
 ## Training models and its variants
 
-model1 = LinearSVC()
-model2 = MultinomialNB()
+classifiers = [
+    LinearSVC(),
+    MultinomialNB(),
+    KNeighborsClassifier(1)
+]
 
-model1.fit(X_train,y_train)
-model2.fit(X_train,y_train)
 
-result1 = model1.predict(X_test)
-result2 = model2.predict(X_test)
-
-print(confusion_matrix(y_test, result1))
-print(confusion_matrix(y_test, result2))
+for model in classifiers:
+    model.fit(X_train,y_train)
+    result = model.predict(X_test)
+    print("==================\n{0}:\n{1}".format(str(model.__class__.__name__), confusion_matrix(y_test, result)))
 
