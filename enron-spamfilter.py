@@ -18,10 +18,14 @@ def make_Dictionary(root_dir):
     emails_dirs = [os.path.join(root_dir,f) for f in os.listdir(root_dir)]
     all_words = []
     for emails_dir in emails_dirs:
+        if not os.path.isdir(emails_dir): continue
         dirs = [os.path.join(emails_dir,f) for f in os.listdir(emails_dir)]
+
         for d in dirs:
+            if not os.path.isdir(d): continue
             emails = [os.path.join(d,f) for f in os.listdir(d)]
             for mail in emails:
+                if '.DS_Store' in mail: continue
                 with open(mail, "rb") as m:
                     for line in m:
                         words = line.split()
@@ -45,14 +49,19 @@ def make_Dictionary(root_dir):
 def extract_features(root_dir):
     emails_dirs = [os.path.join(root_dir,f) for f in os.listdir(root_dir)]
     docID = 0
-    features_matrix = np.zeros((33716,3000))
-    train_labels = np.zeros(33716)
+    features_matrix = np.zeros((6000,3000))
+    train_labels = np.zeros(6000)
     for emails_dir in emails_dirs:
+        if not os.path.isdir(emails_dir): continue
         dirs = [os.path.join(emails_dir,f) for f in os.listdir(emails_dir)]
         for d in dirs:
+            if not os.path.isdir(d):
+                continue
             emails = [os.path.join(d,f) for f in os.listdir(d)]
             for mail in emails:
-                with open(mail) as m:
+                if '.DS_Store' in mail: continue
+                print(mail)
+                with open(mail, 'rb') as m:
                     all_words = []
                     for line in m:
                         words = line.split()
@@ -71,7 +80,7 @@ def extract_features(root_dir):
 
 root_dir = 'enron-dataset'
 dictionary = make_Dictionary(root_dir)
-
+# dictinary = np.load('dict_enron.npy')
 
 #Prepare feature vectors per training mail and its labels
 
@@ -80,8 +89,9 @@ np.save('enron_features_matrix.npy',features_matrix)
 np.save('enron_labels.npy',labels)
 
 
-#train_matrix = np.load('enron_features_matrix.npy');
-#labels = np.load('enron_labels.npy');
+# features_matrix = np.load('enron_features_matrix.npy');
+# labels = np.load('enron_labels.npy');
+
 print(features_matrix.shape)
 print(labels.shape)
 print(sum(labels==0),sum(labels==1))
