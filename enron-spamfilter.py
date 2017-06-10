@@ -23,7 +23,9 @@ def make_Dictionary(root_dir):
             emails = [os.path.join(d,f) for f in os.listdir(d)]
             for mail in emails:
                 with open(mail) as m:
+                    print(m)
                     for line in m:
+                        print(line)
                         words = line.split()
                         all_words += words
     dictionary = Counter(all_words)
@@ -67,7 +69,7 @@ def extract_features(root_dir):
 
 #Create a dictionary of words with its frequency
 
-root_dir = 'Enron-data-set'
+root_dir = 'enron-dataset'
 dictionary = make_Dictionary(root_dir)
 
 
@@ -80,9 +82,9 @@ np.save('enron_labels.npy',labels)
 
 #train_matrix = np.load('enron_features_matrix.npy');
 #labels = np.load('enron_labels.npy');
-print features_matrix.shape
-print labels.shape
-print sum(labels==0),sum(labels==1)
+print(features_matrix.shape)
+print(labels.shape)
+print(sum(labels==0),sum(labels==1))
 X_train, X_test, y_train, y_test = train_test_split(features_matrix, labels, test_size=0.40)
 
 ## Training models and its variants
@@ -96,6 +98,6 @@ model2.fit(X_train,y_train)
 result1 = model1.predict(X_test)
 result2 = model2.predict(X_test)
 
-print confusion_matrix(y_test, result1)
-print confusion_matrix(y_test, result2)
+print(confusion_matrix(y_test, result1))
+print(confusion_matrix(y_test, result2))
 
