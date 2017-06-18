@@ -16,6 +16,7 @@ from features.character_based.whitespace_ratio import WhitespaceRatio
 from features.word_based.average_word_len import AverageWordLen
 from features.word_based.number_of_words import NumberOfWords
 from features.word_based.short_words_ratio import ShortWordsRatio
+from features.word_based.spam_words import SpamWords
 from features.word_based.unique_words_ratio import UniqueWordsRatio
 from features.word_counts import WordCounts
 from model import ToMatrix
@@ -49,16 +50,17 @@ def get_dataset():
 
 def get_features(train):
     features = [
-        ('word_counts', WordCounts(train)),
-        ('number_of_characters', NumberOfCharacters()),
-        ('alpha_ratio', AlphaRatio()),
-        ('digit_ratio', DigitRatio()),
-        ('whitespace_ratio', WhitespaceRatio()),
-        ('special_chars_ratio', SpecialCharsRatio()),
-        ('number_of_words', NumberOfWords()),
-        ('short_words_ratio', ShortWordsRatio()),
-        ('average_word_len', AverageWordLen()),
-        ('unique_words_ratio', UniqueWordsRatio())
+        # ('word_counts', WordCounts(train)),
+        # ('number_of_characters', NumberOfCharacters()),
+        # ('alpha_ratio', AlphaRatio()),
+        # ('digit_ratio', DigitRatio()),
+        # ('whitespace_ratio', WhitespaceRatio()),
+        # ('special_chars_ratio', SpecialCharsRatio()),
+        # ('number_of_words', NumberOfWords()),
+        # ('short_words_ratio', ShortWordsRatio()),
+        # ('average_word_len', AverageWordLen()),
+        # ('unique_words_ratio', UniqueWordsRatio()),
+        ('spam_words', SpamWords())
     ]
     return features
 
@@ -68,8 +70,10 @@ def get_pipeline(features):
     for feature in features:
         feature_names += feature[1].FEATS
     print(feature_names)
-    return Pipeline(features + [('transform', ToMatrix(features=feature_names)),
-                                ('norm', MinMaxScaler())])
+    return Pipeline(features + [
+        ('transform', ToMatrix(features=feature_names)),
+        ('norm', MinMaxScaler())
+    ])
 
 
 def run_classifiers(test, train):

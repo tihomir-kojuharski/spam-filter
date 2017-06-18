@@ -7,7 +7,7 @@ class AlphaRatio(Feature):
 
     def transform(self, dataset):
         for instance in dataset:
-            instance["features"]["alpha_ratio"] = len(re.findall(b"\w", instance["content"]))     \
+            instance["features"]["alpha_ratio"] = len(re.findall(b"[A-Za-z]", instance["content"]))     \
                                                   / instance["features"]["number_of_characters"]
 
         return dataset
