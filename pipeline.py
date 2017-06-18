@@ -3,6 +3,8 @@ from csv import DictReader
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing.data import MinMaxScaler
 from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
@@ -18,6 +20,7 @@ from model import ToMatrix
 import os
 
 dataset_dir = "enron-dataset"
+
 
 def get_dataset():
     emails_dirs = [os.path.join(dataset_dir, f) for f in os.listdir(dataset_dir)]
@@ -42,6 +45,7 @@ def get_dataset():
 
     return instances
 
+
 def get_features(train):
     features = [
         ('word_counts', WordCounts(train))
@@ -55,7 +59,7 @@ def get_features(train):
     return features
 
 
-def get_pipeline(features, clf):
+def get_pipeline(features):
     feature_names = []
     for feature in features:
         feature_names += feature[1].FEATS
@@ -64,33 +68,39 @@ def get_pipeline(features, clf):
                                 ('norm', MinMaxScaler())])
 
 
-def run_classifier(test, train):
-    clf = SVC(kernel="linear", C=0.025)
+def run_classifiers(test, train):
+    classifiers = [
+        SVC(kernel="linear", C=0.025),
+        MultinomialNB(),
+        KNeighborsClassifier(1)
+    ]
 
-    # print(test)
-
+    print("Transforming data to features...")
     #  get pipeline of features and generate them
-    pipeline = get_pipeline(get_features(train), clf)
+    pipeline = get_pipeline(get_features(train))
     X_train = pipeline.fit_transform(train)
+    trainLabels = [instance['is_spam'] for instance in train]
 
-    print("Start training...")
-    true_labels = [instance['is_spam'] for instance in train]
-    clf.fit(X_train, true_labels)
-    print("Finished training...")
-
+    testLabels = [instance["is_spam"] for instance in test]
     # get the features for the test set
-    X = pipeline.fit_transform(test)
-    # return the predicted labels of the test set
-    return clf.predict(X)
+    X_test = pipeline.fit_transform(test)
+
+    print("Finished data to features...")
+
+    for classifier in classifiers:
+        print("==================== {0} ==================== ".format(str(classifier.__class__.__name__)))
+
+        print("Start training...")
+        classifier.fit(X_train, trainLabels)
+        print("Finished training...")
+
+        print("Starting prediction...")
+        predictedLabels = classifier.predict(X_test)
+        print("Finished prediction...")
+
+        print("\nConfusion matrix:\n{0}".format(confusion_matrix(testLabels, predictedLabels)))
 
 
 if __name__ == "__main__":
-    # test_cross_validation()
-    dataset = get_dataset()
-
-    train, test = train_test_split(dataset, test_size=0.40)
-
-    predictedLabels = run_classifier(test, train)
-    goldLabels = [instance["is_spam"] for instance in test]
-
-    print("==================\n{0}:\n{1}".format(str("SVM"), confusion_matrix(goldLabels, predictedLabels)))
+    train, test = train_test_split(get_dataset(), test_size=0.40)
+    predictedLabels = run_classifiers(test, train)
