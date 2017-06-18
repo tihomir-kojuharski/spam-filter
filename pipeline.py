@@ -1,27 +1,24 @@
-from csv import DictReader
+import os
 
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
-from sklearn.model_selection import KFold
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.preprocessing.data import MinMaxScaler
 from sklearn.pipeline import Pipeline
+from sklearn.preprocessing.data import MinMaxScaler
 from sklearn.svm import SVC
 
-# from features.counting_feat import SentenceLength, BagOfTfIDF, WordOverlap
-# from features.nltk_feat import POS, NER
-# from features.preprocess import TokenizedLemmas
-from features.alpha_ratio import AlphaRatio
-from features.digit_ratio import DigitRatio
-from features.number_of_characters import NumberOfCharacters
-from features.special_chars_ratio import SpecialCharsRatio
-from features.whitespace_ratio import WhitespaceRatio
+from features.character_based.alpha_ratio import AlphaRatio
+from features.character_based.digit_ratio import DigitRatio
+from features.character_based.number_of_characters import NumberOfCharacters
+from features.character_based.special_chars_ratio import SpecialCharsRatio
+from features.character_based.whitespace_ratio import WhitespaceRatio
+from features.word_based.average_word_len import AverageWordLen
+from features.word_based.number_of_words import NumberOfWords
+from features.word_based.short_words_ratio import ShortWordsRatio
+from features.word_based.unique_words_ratio import UniqueWordsRatio
 from features.word_counts import WordCounts
-
 from model import ToMatrix
-
-import os
 
 dataset_dir = "enron-dataset"
 
@@ -57,7 +54,11 @@ def get_features(train):
         ('alpha_ratio', AlphaRatio()),
         ('digit_ratio', DigitRatio()),
         ('whitespace_ratio', WhitespaceRatio()),
-        ('special_chars_ratio', SpecialCharsRatio())
+        ('special_chars_ratio', SpecialCharsRatio()),
+        ('number_of_words', NumberOfWords()),
+        ('short_words_ratio', ShortWordsRatio()),
+        ('average_word_len', AverageWordLen()),
+        ('unique_words_ratio', UniqueWordsRatio())
     ]
     return features
 
@@ -88,7 +89,7 @@ def run_classifiers(test, train):
     # get the features for the test set
     X_test = pipeline.fit_transform(test)
 
-    print("Finished data to features...")
+    print("Finished transforming data to features...")
 
     for classifier in classifiers:
         print("==================== {0} ==================== ".format(str(classifier.__class__.__name__)))

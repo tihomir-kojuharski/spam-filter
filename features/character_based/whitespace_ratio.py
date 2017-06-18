@@ -7,7 +7,6 @@ class WhitespaceRatio(Feature):
 
     def transform(self, dataset):
         for instance in dataset:
-            contentLen = len(instance["content"])
             instance["features"]["whitespace_ratio"] = len(re.findall(b"\s", instance["content"]))     \
                                                   / instance["features"]["number_of_characters"]
 

@@ -2,13 +2,12 @@ from model import Feature
 import re
 
 
-class DigitRatio(Feature):
-    FEATS = ["digit_ratio"]
+class AlphaRatio(Feature):
+    FEATS = ["alpha_ratio"]
 
     def transform(self, dataset):
         for instance in dataset:
-            contentLen = len(instance["content"])
-            instance["features"]["digit_ratio"] = len(re.findall(b"\d", instance["content"]))     \
+            instance["features"]["alpha_ratio"] = len(re.findall(b"\w", instance["content"]))     \
                                                   / instance["features"]["number_of_characters"]
 
         return dataset
