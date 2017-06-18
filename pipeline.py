@@ -12,7 +12,11 @@ from sklearn.svm import SVC
 # from features.counting_feat import SentenceLength, BagOfTfIDF, WordOverlap
 # from features.nltk_feat import POS, NER
 # from features.preprocess import TokenizedLemmas
-
+from features.alpha_ratio import AlphaRatio
+from features.digit_ratio import DigitRatio
+from features.number_of_characters import NumberOfCharacters
+from features.special_chars_ratio import SpecialCharsRatio
+from features.whitespace_ratio import WhitespaceRatio
 from features.word_counts import WordCounts
 
 from model import ToMatrix
@@ -48,13 +52,12 @@ def get_dataset():
 
 def get_features(train):
     features = [
-        ('word_counts', WordCounts(train))
-        # ('preprocess_lemmas', TokenizedLemmas()),
-        # ('sent_len', SentenceLength()),
-        # ('tfidf', TfidfVectorizer(ngram_range=(1, 3))),
-        # ('pos', POS()),
-        # ('ner', NER()),
-        # ('word_overlap', WordOverlap())
+        ('word_counts', WordCounts(train)),
+        ('number_of_characters', NumberOfCharacters()),
+        ('alpha_ratio', AlphaRatio()),
+        ('digit_ratio', DigitRatio()),
+        ('whitespace_ratio', WhitespaceRatio()),
+        ('special_chars_ratio', SpecialCharsRatio())
     ]
     return features
 
