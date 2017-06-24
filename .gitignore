@@ -3,3 +3,4 @@
 *.DS_Store
 Thumbs.db
 enron_features_matrix.npy
+__pycache__

@@ -13,15 +13,17 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import confusion_matrix
 from sklearn.svm import LinearSVC
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
 
 mailsCount = 0
 
+commonWordsCount = 3000
+featuresCount = commonWordsCount + 1;
 
 class WordDesc:
     def __init__(self, wordId, counter):
         self.wordId = wordId
         self.counter = counter
-
 
 def make_Dictionary(root_dir):
     emails_dirs = [os.path.join(root_dir, f) for f in os.listdir(root_dir)]
@@ -52,7 +54,7 @@ def make_Dictionary(root_dir):
     for item in items_to_remove:
         del wordCountersList[item]
 
-    wordCountersList = wordCountersList.most_common(3000)
+    wordCountersList = wordCountersList.most_common(commonWordsCount)
 
     dictionary = {}
     nextWordId = 0
@@ -69,7 +71,7 @@ def make_Dictionary(root_dir):
 def extract_features(root_dir):
     emails_dirs = [os.path.join(root_dir, f) for f in os.listdir(root_dir)]
     docID = 0
-    features_matrix = np.zeros((mailsCount, 3000))
+    features_matrix = np.zeros((mailsCount, featuresCount))
     train_labels = np.zeros(mailsCount)
     for emails_dir in emails_dirs:
         if not os.path.isdir(emails_dir): continue
@@ -80,9 +82,10 @@ def extract_features(root_dir):
             emails = [os.path.join(d, f) for f in os.listdir(d)]
             for mail in emails:
                 if '.DS_Store' in mail: continue
-                print(mail)
+                # nn(mail)
                 with open(mail, 'rb') as m:
                     all_words = []
+
                     for line in m:
                         words = line.split()
                         all_words += words
@@ -94,10 +97,11 @@ def extract_features(root_dir):
                         if wordDesc == None:
                             continue
                         features_matrix[docID, wordDesc.wordId] = wordCount
+
+
                 train_labels[docID] = int(mail.split(".")[-2] == 'spam')
                 docID = docID + 1
     return features_matrix, train_labels
-
 
 # Create a dictionary of words with its frequency
 
@@ -122,9 +126,9 @@ X_train, X_test, y_train, y_test = train_test_split(features_matrix, labels, tes
 ## Training models and its variants
 
 classifiers = [
-    LinearSVC(),
-    MultinomialNB(),
-    KNeighborsClassifier(1)
+    SVC(kernel="linear", C=0.025),
+    # MultinomialNB(),
+    # KNeighborsClassifier(1)
 ]
 
 for model in classifiers:

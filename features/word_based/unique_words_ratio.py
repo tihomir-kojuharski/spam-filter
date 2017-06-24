@@ -7,7 +7,7 @@ class UniqueWordsRatio(Feature):
     def transform(self, dataset):
         for instance in dataset:
             uniqueWords = {}
-            for word in instance["content_words"]:
+            for word in instance["content_words_list"]:
                 uniqueWords[word] = True
 
             instance["features"]["unique_words_ratio"] = len(uniqueWords.keys()) \
