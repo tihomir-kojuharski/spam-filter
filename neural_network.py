@@ -28,7 +28,7 @@ class NeuralNetwork:
         self.weight0 = []
         self.weight1 = []
 
-    def fit(self, X_train, Y_train, learning_rate=0.2, epochs=1000):
+    def fit(self, X_train, Y_train, learning_rate=0.2, epochs=10000):
         Y_train = np.array([[item] for item in Y_train])
 
         # we have 3 layers: input layer, hidden layer and output layer
@@ -55,9 +55,9 @@ class NeuralNetwork:
             layer_2_error = Y_train - layer_2
 
             # perform back propagation
-            layer_2_delta = layer_2_error * self.activation_prime(layer_2)
+            layer_2_delta = layer_2_error * self.activation_prime(layer_2) * learning_rate
             layer_1_error = layer_2_delta.dot(self.weight1.T)
-            layer_1_delta = layer_1_error * self.activation_prime(layer_1)
+            layer_1_delta = layer_1_error * self.activation_prime(layer_1) * learning_rate
 
             # update the weight vectors
             self.weight1 += layer_1.T.dot(layer_2_delta)
