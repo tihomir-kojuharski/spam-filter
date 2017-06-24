@@ -15,6 +15,8 @@ from sklearn.preprocessing.data import MinMaxScaler
 from sklearn.svm import SVC
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
+from twinsvm.TVSVM import TwinSVMClassifier
+import datetime
 
 from features.character_based.alpha_ratio import AlphaRatio
 from features.character_based.digit_ratio import DigitRatio
@@ -62,16 +64,16 @@ def get_dataset():
 
 def get_features(train):
     features = [
-        # ('word_counts', WordCounts(train)),
-        ('number_of_characters', NumberOfCharacters()),
-        ('alpha_ratio', AlphaRatio()),
-        ('digit_ratio', DigitRatio()),
-        ('whitespace_ratio', WhitespaceRatio()),
-        ('special_chars_ratio', SpecialCharsRatio()),
-        ('number_of_words', NumberOfWords()),
-        ('short_words_ratio', ShortWordsRatio()),
-        ('average_word_len', AverageWordLen()),
-        ('unique_words_ratio', UniqueWordsRatio()),
+        ('word_counts', WordCounts(train)),
+        # ('number_of_characters', NumberOfCharacters()),
+        # ('alpha_ratio', AlphaRatio()),
+        # ('digit_ratio', DigitRatio()),
+        # ('whitespace_ratio', WhitespaceRatio()),
+        # ('special_chars_ratio', SpecialCharsRatio()),
+        # ('number_of_words', NumberOfWords()),
+        # ('short_words_ratio', ShortWordsRatio()),
+        # ('average_word_len', AverageWordLen()),
+        # ('unique_words_ratio', UniqueWordsRatio()),
         # ('spam_words', SpamWords()),
         # ('flesch_reading_score', FleschReadingEase()),
     ]
@@ -92,11 +94,14 @@ def get_pipeline(features):
 def run_classifiers(test, train):
     nnClassifier = NeuralNetwork(activation='sigmoid')
 
+    params3 = {'Epsilon1': 0.1, 'Epsilon2': 0.1, 'C1': 1, 'C2': 1, 'kernel_type': 0, 'kernel_param': 1, 'fuzzy': 0}
+
     classifiers = [
-        # SVC(kernel="linear", C=0.025),
-        # SVC(gamma=2, C=1),
+        SVC(kernel="linear", C=0.025),
+        SVC(gamma=2, C=1),
+        TwinSVMClassifier(**params3),
         MultinomialNB(),
-        # KNeighborsClassifier(1),
+        KNeighborsClassifier(1),
         nnClassifier,
         # GaussianProcessClassifier(1.0 * RBF(1.0), warm_start=True),
         DecisionTreeClassifier(max_depth=5),
@@ -126,12 +131,16 @@ def run_classifiers(test, train):
         print("\n==================== {0} ====================".format(str(classifier.__class__.__name__)))
 
         print("Start training...")
+        startTime = datetime.datetime.now()
         classifier.fit(X_train, trainLabels)
-        print("Finished training...")
+        endTime = datetime.datetime.now()
+        print("Finished training for", endTime-startTime)
 
         print("Starting prediction...")
+        startTime = datetime.datetime.now()
         predictedLabels = classifier.predict(X_test)
-        print("Finished prediction...")
+        endTime = datetime.datetime.now()
+        print("Finished prediction for", endTime-startTime)
 
         confusionMatrix = confusion_matrix(testLabels, predictedLabels)
         precision = confusionMatrix[1, 1] / (confusionMatrix[1, 1] + confusionMatrix[0, 1])

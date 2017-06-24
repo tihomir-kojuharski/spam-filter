@@ -28,7 +28,7 @@ class NeuralNetwork:
         self.weight0 = []
         self.weight1 = []
 
-    def fit(self, X_train, Y_train, learning_rate=0.2, epochs=10000):
+    def fit(self, X_train, Y_train, learning_rate=0.2, epochs=3000):
         Y_train = np.array([[item] for item in Y_train])
 
         # we have 3 layers: input layer, hidden layer and output layer
@@ -65,8 +65,8 @@ class NeuralNetwork:
 
             if j % 100 == 0 and len(self.X_test) > 0 and len(self.Y_test) > 0:
                 temp_layer_0 = self.X_test
-                temp_layer_1 = sigmoid(np.dot(temp_layer_0, self.weight0))
-                temp_layer_2 = sigmoid(np.dot(temp_layer_1, self.weight1))
+                temp_layer_1 = self.activation(np.dot(temp_layer_0, self.weight0))
+                temp_layer_2 = self.activation(np.dot(temp_layer_1, self.weight1))
                 correct = 0
 
                 # if the output is > 0.5, then label as spam else no spam
@@ -80,7 +80,7 @@ class NeuralNetwork:
                         correct += 1
 
                 # printing the output
-                print(j, " accuracy = ", correct * 100.0 / len(temp_layer_2))
+                print(j, " accuracy = ", round(correct * 100.0 / len(temp_layer_2), 2))
 
     def predict(self, X_test):
         # evaluation on the testing data
