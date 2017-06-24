@@ -1,11 +1,14 @@
 import os
+from itertools import cycle
 
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearDiscriminantAnalysis
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.gaussian_process import GaussianProcessClassifier
 from sklearn.gaussian_process.kernels import RBF
+from sklearn.metrics import average_precision_score
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import precision_recall_curve
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB, GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -65,17 +68,17 @@ def get_dataset():
 def get_features(train):
     features = [
         ('word_counts', WordCounts(train)),
-        # ('number_of_characters', NumberOfCharacters()),
-        # ('alpha_ratio', AlphaRatio()),
-        # ('digit_ratio', DigitRatio()),
-        # ('whitespace_ratio', WhitespaceRatio()),
-        # ('special_chars_ratio', SpecialCharsRatio()),
-        # ('number_of_words', NumberOfWords()),
-        # ('short_words_ratio', ShortWordsRatio()),
-        # ('average_word_len', AverageWordLen()),
-        # ('unique_words_ratio', UniqueWordsRatio()),
-        # ('spam_words', SpamWords()),
-        # ('flesch_reading_score', FleschReadingEase()),
+        ('number_of_characters', NumberOfCharacters()),
+        ('alpha_ratio', AlphaRatio()),
+        ('digit_ratio', DigitRatio()),
+        ('whitespace_ratio', WhitespaceRatio()),
+        ('special_chars_ratio', SpecialCharsRatio()),
+        ('number_of_words', NumberOfWords()),
+        ('short_words_ratio', ShortWordsRatio()),
+        ('average_word_len', AverageWordLen()),
+        ('unique_words_ratio', UniqueWordsRatio()),
+        ('spam_words', SpamWords()),
+        ('flesch_reading_score', FleschReadingEase()),
     ]
     return features
 
@@ -97,33 +100,42 @@ def run_classifiers(test, train):
     params3 = {'Epsilon1': 0.1, 'Epsilon2': 0.1, 'C1': 1, 'C2': 1, 'kernel_type': 0, 'kernel_param': 1, 'fuzzy': 0}
 
     classifiers = [
-        SVC(kernel="linear", C=0.025),
-        SVC(gamma=2, C=1),
-        TwinSVMClassifier(**params3),
+        # SVC(kernel="linear", C=0.025),
+        # SVC(gamma=2, C=1),
+        # TwinSVMClassifier(**params3),
         MultinomialNB(),
-        KNeighborsClassifier(1),
-        nnClassifier,
+        # KNeighborsClassifier(1),
+        # nnClassifier,
         # GaussianProcessClassifier(1.0 * RBF(1.0), warm_start=True),
-        DecisionTreeClassifier(max_depth=5),
-        RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
-        MLPClassifier(alpha=1),
-        AdaBoostClassifier(),
-        GaussianNB(),
-        QuadraticDiscriminantAnalysis()
+        # DecisionTreeClassifier(max_depth=5),
+        # RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
+        # MLPClassifier(alpha=1),
+        # AdaBoostClassifier(),
+        # GaussianNB(),
+        # LinearDiscriminantAnalysis(),
+        # QuadraticDiscriminantAnalysis(),
     ]
 
     print("Transforming data to features...")
     #  get pipeline of features and generate them
     pipeline = get_pipeline(get_features(train))
+
+    # X_train = np.load('enron_train_features_matrix.npy')
+    # trainLabels = np.load('enron_train_labels.npy')
     X_train = pipeline.fit_transform(train)
     trainLabels = [instance['is_spam'] for instance in train]
-    testLabels = [instance["is_spam"] for instance in test]
+    np.save('enron_train_features_matrix.npy', X_train)
+    np.save('enron_train_labels.npy', trainLabels)
 
-    # get the features for the test set
     X_test = pipeline.fit_transform(test)
+    testLabels = [instance["is_spam"] for instance in test]
+    # X_test = np.load('enron_test_features_matrix.npy');
+    # testLabels = np.load('enron_test_labels.npy');
+    np.save('enron_test_features_matrix.npy', X_test)
+    np.save('enron_test_labels.npy', testLabels)
 
-    nnClassifier.X_test = X_test
-    nnClassifier.Y_test = testLabels
+    nnClassifier.X_test = np.array(X_test)
+    nnClassifier.Y_test = np.array(testLabels)
 
     print("Finished transforming data to features...")
 
@@ -153,7 +165,6 @@ def run_classifiers(test, train):
         print("Recall: {0}".format(round(recall, 2)))
         print("F1: {0}".format(round(f1, 2)))
         print("Accuracy: {0}".format(round(accuracy, 2)))
-
 
 if __name__ == "__main__":
     train, test = train_test_split(get_dataset(), test_size=0.40)
