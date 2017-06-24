@@ -7,6 +7,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing.data import MinMaxScaler
 from sklearn.svm import SVC
+import numpy as np
 
 from features.character_based.alpha_ratio import AlphaRatio
 from features.character_based.digit_ratio import DigitRatio
@@ -16,10 +17,11 @@ from features.character_based.whitespace_ratio import WhitespaceRatio
 from features.word_based.average_word_len import AverageWordLen
 from features.word_based.number_of_words import NumberOfWords
 from features.word_based.short_words_ratio import ShortWordsRatio
-from features.word_based.spam_words import SpamWords
+# from features.word_based.spam_words import SpamWords
 from features.word_based.unique_words_ratio import UniqueWordsRatio
 from features.word_counts import WordCounts
 from model import ToMatrix
+from neural_network import NeuralNetwork
 
 dataset_dir = "enron-dataset"
 
@@ -50,7 +52,7 @@ def get_dataset():
 
 def get_features(train):
     features = [
-        # ('word_counts', WordCounts(train)),
+        ('word_counts', WordCounts(train)),
         # ('number_of_characters', NumberOfCharacters()),
         # ('alpha_ratio', AlphaRatio()),
         # ('digit_ratio', DigitRatio()),
@@ -60,7 +62,7 @@ def get_features(train):
         # ('short_words_ratio', ShortWordsRatio()),
         # ('average_word_len', AverageWordLen()),
         # ('unique_words_ratio', UniqueWordsRatio()),
-        ('spam_words', SpamWords())
+        # ('spam_words', SpamWords())
     ]
     return features
 
@@ -78,9 +80,10 @@ def get_pipeline(features):
 
 def run_classifiers(test, train):
     classifiers = [
-        SVC(kernel="linear", C=0.025),
-        MultinomialNB(),
-        KNeighborsClassifier(1)
+        # SVC(kernel="linear", C=0.025),
+        # MultinomialNB(),
+        # KNeighborsClassifier(1),
+        NeuralNetwork(activation='sigmoid')
     ]
 
     print("Transforming data to features...")
@@ -90,6 +93,7 @@ def run_classifiers(test, train):
     trainLabels = [instance['is_spam'] for instance in train]
 
     testLabels = [instance["is_spam"] for instance in test]
+    # testLabels = np.array([[instance["is_spam"]] for instance in test])
     # get the features for the test set
     X_test = pipeline.fit_transform(test)
 

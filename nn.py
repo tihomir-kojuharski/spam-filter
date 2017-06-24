@@ -2,11 +2,17 @@ from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 import numpy as np
 
-def derivative(x):
-    return x * (1.0 - x)
-
 def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
+
+def sigmoid_prime(x):
+    return x * (1.0 - x)
+
+def tanh(x):
+    return np.tanh(x)
+
+def tanh_prime(x):
+    return 1.0 - x**2
 
 X = []
 Y = []
@@ -60,9 +66,9 @@ for j in range(2000):
     layer_2_error = Y_train - layer_2
 
     # perform back propagation
-    layer_2_delta = layer_2_error * derivative(layer_2)
+    layer_2_delta = layer_2_error * sigmoid_prime(layer_2)
     layer_1_error = layer_2_delta.dot(weight1.T)
-    layer_1_delta = layer_1_error * derivative(layer_1)
+    layer_1_delta = layer_1_error * sigmoid_prime(layer_1)
 
     # update the weight vectors
     weight1 += layer_1.T.dot(layer_2_delta)
