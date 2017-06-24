@@ -17,9 +17,10 @@ from features.character_based.whitespace_ratio import WhitespaceRatio
 from features.word_based.average_word_len import AverageWordLen
 from features.word_based.number_of_words import NumberOfWords
 from features.word_based.short_words_ratio import ShortWordsRatio
-# from features.word_based.spam_words import SpamWords
+from features.word_based.spam_words import SpamWords
 from features.word_based.unique_words_ratio import UniqueWordsRatio
 from features.word_counts import WordCounts
+from features.flesh_reading_score import  FleschReadingEase
 from model import ToMatrix
 from neural_network import NeuralNetwork
 
@@ -52,7 +53,7 @@ def get_dataset():
 
 def get_features(train):
     features = [
-        ('word_counts', WordCounts(train)),
+        # ('word_counts', WordCounts(train)),
         # ('number_of_characters', NumberOfCharacters()),
         # ('alpha_ratio', AlphaRatio()),
         # ('digit_ratio', DigitRatio()),
@@ -62,7 +63,8 @@ def get_features(train):
         # ('short_words_ratio', ShortWordsRatio()),
         # ('average_word_len', AverageWordLen()),
         # ('unique_words_ratio', UniqueWordsRatio()),
-        # ('spam_words', SpamWords())
+        # ('spam_words', SpamWords()),
+        ('flesch_reading_score', FleschReadingEase()),
     ]
     return features
 
@@ -80,9 +82,9 @@ def get_pipeline(features):
 
 def run_classifiers(test, train):
     classifiers = [
-        # SVC(kernel="linear", C=0.025),
-        # MultinomialNB(),
-        # KNeighborsClassifier(1),
+        SVC(kernel="linear", C=0.025),
+        MultinomialNB(),
+        KNeighborsClassifier(1),
         NeuralNetwork(activation='sigmoid')
     ]
 
