@@ -48,6 +48,7 @@ def get_dataset():
                         "features": {}
                     })
 
+    # return instances[3000:4000]
     return instances
 
 
@@ -112,7 +113,14 @@ def run_classifiers(test, train):
         predictedLabels = classifier.predict(X_test)
         print("Finished prediction...")
 
-        print("\nConfusion matrix:\n{0}".format(confusion_matrix(testLabels, predictedLabels)))
+        confusionMatrix = confusion_matrix(testLabels, predictedLabels)
+        precision = confusionMatrix[1, 1] / (confusionMatrix[1, 1] + confusionMatrix[0, 1])
+        recall = confusionMatrix[1,1] / (confusionMatrix[1,1] + confusionMatrix[1,0])
+
+        print("\nConfusion matrix:\n{0}\n".format(confusionMatrix))
+        print("\nPrecision: {0}\n".format(precision))
+        print("Recall: {0}\n".format(recall))
+        print("F1: {0}\n".format(2 * (precision * recall) / (precision + recall)))
 
 
 if __name__ == "__main__":

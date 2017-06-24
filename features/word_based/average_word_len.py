@@ -6,7 +6,7 @@ class AverageWordLen(Feature):
 
     def transform(self, dataset):
         for instance in dataset:
-            instance["features"]["average_word_len"] = len(re.findall(b"\w", instance["content"])) \
+            instance["features"]["average_word_len"] = len(re.findall(b"\w", instance["content_words_str"])) \
                                                         / instance["features"]["number_of_words"]
 
         return dataset
