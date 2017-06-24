@@ -62,7 +62,7 @@ def get_dataset():
 
 def get_features(train):
     features = [
-        ('word_counts', WordCounts(train)),
+        # ('word_counts', WordCounts(train)),
         ('number_of_characters', NumberOfCharacters()),
         ('alpha_ratio', AlphaRatio()),
         ('digit_ratio', DigitRatio()),
@@ -72,8 +72,8 @@ def get_features(train):
         ('short_words_ratio', ShortWordsRatio()),
         ('average_word_len', AverageWordLen()),
         ('unique_words_ratio', UniqueWordsRatio()),
-        ('spam_words', SpamWords()),
-        ('flesch_reading_score', FleschReadingEase()),
+        # ('spam_words', SpamWords()),
+        # ('flesch_reading_score', FleschReadingEase()),
     ]
     return features
 
@@ -118,6 +118,7 @@ def run_classifiers(test, train):
     X_test = pipeline.fit_transform(test)
 
     nnClassifier.X_test = X_test
+    nnClassifier.Y_test = testLabels
 
     print("Finished transforming data to features...")
 

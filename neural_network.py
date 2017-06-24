@@ -63,7 +63,7 @@ class NeuralNetwork:
             self.weight1 += layer_1.T.dot(layer_2_delta)
             self.weight0 += layer_0.T.dot(layer_1_delta)
 
-            if j % 100 == 0 and self.X_test:
+            if j % 100 == 0 and len(self.X_test) > 0 and len(self.Y_test) > 0:
                 temp_layer_0 = self.X_test
                 temp_layer_1 = sigmoid(np.dot(temp_layer_0, self.weight0))
                 temp_layer_2 = sigmoid(np.dot(temp_layer_1, self.weight1))
@@ -76,7 +76,7 @@ class NeuralNetwork:
                     else:
                         temp_layer_2[i][0] = 0
 
-                    if (temp_layer_2[i][0] == y_test[i][0]):
+                    if (temp_layer_2[i][0] == self.Y_test[i]):
                         correct += 1
 
                 # printing the output
