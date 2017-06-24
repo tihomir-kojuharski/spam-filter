@@ -1,12 +1,20 @@
 import os
 
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.gaussian_process.kernels import RBF
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import MultinomialNB, GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing.data import MinMaxScaler
 from sklearn.svm import SVC
+import numpy as np
+from sklearn.tree import DecisionTreeClassifier
 
 from features.character_based.alpha_ratio import AlphaRatio
 from features.character_based.digit_ratio import DigitRatio
@@ -16,6 +24,7 @@ from features.character_based.whitespace_ratio import WhitespaceRatio
 from features.word_based.average_word_len import AverageWordLen
 from features.word_based.number_of_words import NumberOfWords
 from features.word_based.short_words_ratio import ShortWordsRatio
+# from features.word_based.spam_words import SpamWords
 from features.word_based.spam_words import SpamWords
 from features.word_based.unique_words_ratio import UniqueWordsRatio
 from features.word_counts import WordCounts
@@ -81,11 +90,21 @@ def get_pipeline(features):
 
 
 def run_classifiers(test, train):
+    nnClassifier = NeuralNetwork(activation='sigmoid')
+
     classifiers = [
-        SVC(kernel="linear", C=0.025),
+        # SVC(kernel="linear", C=0.025),
+        # SVC(gamma=2, C=1),
         MultinomialNB(),
-        KNeighborsClassifier(1),
-        NeuralNetwork(activation='sigmoid')
+        # KNeighborsClassifier(1),
+        nnClassifier,
+        # GaussianProcessClassifier(1.0 * RBF(1.0), warm_start=True),
+        DecisionTreeClassifier(max_depth=5),
+        RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
+        MLPClassifier(alpha=1),
+        AdaBoostClassifier(),
+        GaussianNB(),
+        QuadraticDiscriminantAnalysis()
     ]
 
     print("Transforming data to features...")
@@ -97,6 +116,8 @@ def run_classifiers(test, train):
 
     # get the features for the test set
     X_test = pipeline.fit_transform(test)
+
+    nnClassifier.X_test = X_test
 
     print("Finished transforming data to features...")
 
