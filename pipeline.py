@@ -1,41 +1,17 @@
+import datetime
 import os
-from itertools import cycle
 
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearDiscriminantAnalysis
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.gaussian_process import GaussianProcessClassifier
-from sklearn.gaussian_process.kernels import RBF
-from sklearn.metrics import average_precision_score
+import numpy as np
 from sklearn.metrics import confusion_matrix
-from sklearn.metrics import precision_recall_curve
 from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import MultinomialNB, GaussianNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neural_network import MLPClassifier
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing.data import MinMaxScaler
-from sklearn.svm import SVC
-import numpy as np
-from sklearn.tree import DecisionTreeClassifier
-from twinsvm.TVSVM import TwinSVMClassifier
-import datetime
 
-from features.character_based.alpha_ratio import AlphaRatio
-from features.character_based.digit_ratio import DigitRatio
-from features.character_based.number_of_characters import NumberOfCharacters
-from features.character_based.special_chars_ratio import SpecialCharsRatio
-from features.character_based.whitespace_ratio import WhitespaceRatio
-from features.word_based.average_word_len import AverageWordLen
-from features.word_based.number_of_words import NumberOfWords
-from features.word_based.short_words_ratio import ShortWordsRatio
-# from features.word_based.spam_words import SpamWords
-from features.word_based.spam_words import SpamWords
-from features.word_based.unique_words_ratio import UniqueWordsRatio
-from features.word_counts import WordCounts
-from features.flesh_reading_score import  FleschReadingEase
+from features.word_based.word_counts import WordCounts
 from model import ToMatrix
 from neural_network import NeuralNetwork
+from twinsvm.TVSVM import TwinSVMClassifier
 
 dataset_dir = "enron-dataset"
 
@@ -68,17 +44,17 @@ def get_dataset():
 def get_features(train):
     features = [
         ('word_counts', WordCounts(train)),
-        ('number_of_characters', NumberOfCharacters()),
-        ('alpha_ratio', AlphaRatio()),
-        ('digit_ratio', DigitRatio()),
-        ('whitespace_ratio', WhitespaceRatio()),
-        ('special_chars_ratio', SpecialCharsRatio()),
-        ('number_of_words', NumberOfWords()),
-        ('short_words_ratio', ShortWordsRatio()),
-        ('average_word_len', AverageWordLen()),
-        ('unique_words_ratio', UniqueWordsRatio()),
-        ('spam_words', SpamWords()),
-        ('flesch_reading_score', FleschReadingEase()),
+        # ('number_of_characters', NumberOfCharacters()),
+        # ('alpha_ratio', AlphaRatio()),
+        # ('digit_ratio', DigitRatio()),
+        # ('whitespace_ratio', WhitespaceRatio()),
+        # ('special_chars_ratio', SpecialCharsRatio()),
+        # ('number_of_words', NumberOfWords()),
+        # ('short_words_ratio', ShortWordsRatio()),
+        # ('average_word_len', AverageWordLen()),
+        # ('unique_words_ratio', UniqueWordsRatio()),
+        # ('spam_words', SpamWords()),
+        # ('flesch_reading_score', FleschReadingEase()),
     ]
     return features
 
@@ -98,11 +74,26 @@ def run_classifiers(test, train):
     nnClassifier = NeuralNetwork(activation='sigmoid')
 
     params3 = {'Epsilon1': 0.1, 'Epsilon2': 0.1, 'C1': 1, 'C2': 1, 'kernel_type': 0, 'kernel_param': 1, 'fuzzy': 0}
+    params4 = {'Epsilon1': 0.1, 'Epsilon2': 0.1, 'C1': 1, 'C2': 1,'kernel_type':0,'kernel_param': 1,'fuzzy' :1}
+    params5 = {'Epsilon1': 0.1, 'Epsilon2': 0.1, 'C1': 1, 'C2': 1,'kernel_type':1,'kernel_param': 1,'fuzzy' :0}
+    params6 = {'Epsilon1': 0.1, 'Epsilon2': 0.1, 'C1': 1, 'C2': 1,'kernel_type':1,'kernel_param': 1,'fuzzy' :1}
+    params7 = {'Epsilon1': 0.1, 'Epsilon2': 0.1, 'C1': 1, 'C2': 1,'kernel_type':2,'kernel_param': 2,'fuzzy' :0}
+    params8 = {'Epsilon1': 0.1, 'Epsilon2': 0.1, 'C1': 1, 'C2': 1,'kernel_type':2,'kernel_param': 2,'fuzzy' :1}
+    params9 = {'Epsilon1': 0.1, 'Epsilon2': 0.1, 'C1': 1, 'C2': 1, 'kernel_type': 3, 'kernel_param': 2, 'fuzzy': 0}
+    params10 = {'Epsilon1': 0.1, 'Epsilon2': 0.1, 'C1': 1, 'C2': 1, 'kernel_type': 3, 'kernel_param': 2, 'fuzzy': 1}
+
 
     classifiers = [
         # SVC(kernel="linear", C=0.025),
         # SVC(gamma=2, C=1),
-        # TwinSVMClassifier(**params3),
+        TwinSVMClassifier(**params3),
+        TwinSVMClassifier(**params4),
+        TwinSVMClassifier(**params5),
+        TwinSVMClassifier(**params6),
+        TwinSVMClassifier(**params7),
+        TwinSVMClassifier(**params8),
+        TwinSVMClassifier(**params9),
+        TwinSVMClassifier(**params10),
         MultinomialNB(),
         # KNeighborsClassifier(1),
         # nnClassifier,
