@@ -1,0 +1,250 @@
+/usr/local/Cellar/python3/3.6.0/Frameworks/Python.framework/Versions/3.6/bin/python3.6 /Users/vkuzmov/Projects/Python/spam-filter/pipeline.py
+Transforming data to features...
+Finished transforming data to features...
+
+==================== SVC ====================
+Start training...
+Finished training for 0:00:13.391995
+Starting prediction...
+Finished prediction for 0:00:02.929031
+
+Confusion matrix:
+[[4487 2132]
+ [2394 4474]]
+
+Precision: 0.68
+Recall: 0.65
+F1: 0.66
+Accuracy: 66.44
+
+==================== SVC ====================
+Start training...
+Finished training for 0:00:15.346102
+Starting prediction...
+Finished prediction for 0:00:04.702406
+
+Confusion matrix:
+[[3954 2665]
+ [1077 5791]]
+
+Precision: 0.68
+Recall: 0.84
+F1: 0.76
+Accuracy: 72.25
+
+==================== MultinomialNB ====================
+Start training...
+Finished training for 0:00:00.034086
+Starting prediction...
+Finished prediction for 0:00:00.007630
+
+Confusion matrix:
+[[3091 3528]
+ [1884 4984]]
+
+Precision: 0.59
+Recall: 0.73
+F1: 0.65
+Accuracy: 59.87
+
+==================== KNeighborsClassifier ====================
+Start training...
+Finished training for 0:00:00.145259
+Starting prediction...
+Finished prediction for 0:00:01.379324
+
+Confusion matrix:
+[[4672 1947]
+ [1821 5047]]
+
+Precision: 0.72
+Recall: 0.73
+F1: 0.73
+Accuracy: 72.06
+
+==================== NeuralNetwork ====================
+Start training...
+0  accuracy =  50.92
+100  accuracy =  50.92
+200  accuracy =  50.92
+300  accuracy =  50.92
+400  accuracy =  50.92
+500  accuracy =  50.92
+600  accuracy =  50.92
+700  accuracy =  50.92
+800  accuracy =  50.92
+900  accuracy =  50.92
+1000  accuracy =  50.92
+1100  accuracy =  50.92
+1200  accuracy =  50.92
+1300  accuracy =  50.92
+1400  accuracy =  50.92
+1500  accuracy =  50.92
+1600  accuracy =  50.92
+1700  accuracy =  50.92
+1800  accuracy =  50.92
+1900  accuracy =  50.92
+2000  accuracy =  50.92
+2100  accuracy =  50.92
+2200  accuracy =  50.92
+2300  accuracy =  50.92
+2400  accuracy =  50.92
+2500  accuracy =  50.92
+2600  accuracy =  50.92
+2700  accuracy =  50.92
+2800  accuracy =  50.92
+2900  accuracy =  50.92
+Finished training for 0:00:18.117394
+Starting prediction...
+Finished prediction for 0:00:00.012942
+
+Confusion matrix:
+[[   0 6619]
+ [   0 6868]]
+
+Precision: 0.51
+Recall: 1.0
+F1: 0.67
+Accuracy: 50.92
+
+==================== DecisionTreeClassifier ====================
+Start training...
+Finished training for 0:00:00.108730
+Starting prediction...
+Finished prediction for 0:00:00.004339
+
+Confusion matrix:
+[[4818 1801]
+ [2276 4592]]
+
+Precision: 0.72
+Recall: 0.67
+F1: 0.69
+Accuracy: 69.77
+
+==================== RandomForestClassifier ====================
+Start training...
+Finished training for 0:00:00.157782
+Starting prediction...
+Finished prediction for 0:00:00.013073
+
+Confusion matrix:
+[[3913 2706]
+ [1384 5484]]
+
+Precision: 0.67
+Recall: 0.8
+F1: 0.73
+Accuracy: 69.67
+
+==================== MLPClassifier ====================
+Start training...
+Finished training for 0:00:01.877660
+Starting prediction...
+Finished prediction for 0:00:00.017248
+
+Confusion matrix:
+[[4282 2337]
+ [2181 4687]]
+
+Precision: 0.67
+Recall: 0.68
+F1: 0.67
+Accuracy: 66.5
+
+==================== AdaBoostClassifier ====================
+Start training...
+Finished training for 0:00:01.498798
+Starting prediction...
+Finished prediction for 0:00:00.096928
+
+Confusion matrix:
+[[4783 1836]
+ [1983 4885]]
+
+Precision: 0.73
+Recall: 0.71
+F1: 0.72
+Accuracy: 71.68
+
+==================== GaussianNB ====================
+Start training...
+Finished training for 0:00:00.007880
+Starting prediction...
+Finished prediction for 0:00:00.007082
+
+Confusion matrix:
+[[1943 4676]
+ [ 791 6077]]
+
+Precision: 0.57
+Recall: 0.88
+F1: 0.69
+Accuracy: 59.46
+
+==================== LinearDiscriminantAnalysis ====================
+Start training...
+Finished training for 0:00:00.050359
+Starting prediction...
+Finished prediction for 0:00:00.000745
+
+Confusion matrix:
+[[3291 3328]
+ [1273 5595]]
+
+Precision: 0.63
+Recall: 0.81
+F1: 0.71
+Accuracy: 65.89
+
+==================== QuadraticDiscriminantAnalysis ====================
+Start training...
+/usr/local/lib/python3.6/site-packages/sklearn/discriminant_analysis.py:695: UserWarning: Variables are collinear
+  warnings.warn("Variables are collinear")
+Finished training for 0:00:00.021334
+Starting prediction...
+Finished prediction for 0:00:00.010418
+
+Confusion matrix:
+[[4752 1867]
+ [4381 2487]]
+
+Precision: 0.57
+Recall: 0.36
+F1: 0.44
+Accuracy: 53.67
+
+Process finished with exit code 0
+
+==================== TwinSVMClassifier 3 ====================
+Start training...
+Finished training for 0:46:02.242816
+Starting prediction...
+Finished prediction for 0:00:00.062539
+
+Confusion matrix:
+[[3468 3151]
+ [1323 5545]]
+
+Precision: 0.64
+Recall: 0.81
+F1: 0.71
+Accuracy: 66.83
+
+Process finished with exit code 0
+
+==================== TwinSVMClassifier 6 ====================
+Start training...
+Finished training for 2:08:40.843491
+Starting prediction...
+Finished prediction for 0:26:33.571411
+
+Confusion matrix:
+[[3247 3372]
+ [1151 5717]]
+
+Precision: 0.63
+Recall: 0.83
+F1: 0.72
+Accuracy: 66.46
+
